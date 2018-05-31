@@ -3,9 +3,12 @@
 # juan4life - maman@bengkrad.com v 0.1
 # Parses output from iwlist various output into grafana interface
 
+from influxdb import InfluxDBClient
+
 import sys
 import subprocess
 import time
+import datetime
 
 interface = "wlp2s0"
 
@@ -13,7 +16,7 @@ interface = "wlp2s0"
 def get_SSID(cell):
     return matching_line(cell,"ESSID:")[1:-1]
 
-#
+#MAC Address
 def get_MAC(cell):
 	return matching_line(cell,"Address:")
 
@@ -21,10 +24,6 @@ def get_MAC(cell):
 def get_sQuality(cell):
     quality = matching_line(cell,"Quality=").split()[0].split('/')
     return str(int(round(float(quality[0]) / float(quality[1]) * 100))).rjust(3) + " %"
-
-#Channel
-def get_channel(cell):
-	return matching_line(cell,"Channel:")
 
 #Signal Power (In dB)
 def get_sPower(cell):
@@ -51,7 +50,6 @@ def get_encrypt(cell):
 # function defined above.
 rules={"SSID":get_SSID,
        "Quality":get_sQuality,
-       "Channel":get_channel,
        "Encryption":get_encrypt,
        "MAC":get_MAC,
        "Power":get_sPower
@@ -98,7 +96,7 @@ def init(table):
     for line in table:
         for el in line:
             #initial data
-            if (counter < 24):
+            if (counter < 7):
                 counter = counter + 1
                 if (counter == 5):
                     a.append(el)
@@ -117,10 +115,13 @@ def init_cells(cells):
 
 #Main Program, prints table from iwlist command
 def main():
+
+    client = InfluxDBClient('192.168.41.209', 8086, 'root', 'root', 'wifiStat')
+    client.create_database('wifiStat')
+
     stats = 0
 
     while 1:
-
         cells=[[]]
         parsed_cells=[]
 
@@ -146,22 +147,47 @@ def main():
         #state the initial network card
         if stats == 0 :
             a = init_cells(parsed_cells)
-            print("Yang ingin dicek : " + a[0] + " " + a[1])
+            print("Initial Check : " + a[0] + "/" + a[1])
             stats = 1
 
-        len_cells = len(parsed_cells)-1
 
+        len_cells = len(parsed_cells)-1
         net_card = [""]
 
+        #past_date = datetime.datetime.today()
+        past_date = datetime.datetime.utcnow()
+
+
+        #Print and parse wifi datas to graph
         i = 0
         found = 0
         while (i < len_cells) & (found == 0):
             if (parsed_cells[i]["SSID"] == a[0]) & (parsed_cells[i]["MAC"] == a[1]) & (found == 0):
-                net_card[0] = parsed_cells[i]["SSID"] + "|" + parsed_cells[i]["MAC"] + "|" +  parsed_cells[i]["Encryption"]
-                print(net_card[0] + "|" + parsed_cells[i]["Quality"])
+                net_card[0] = "|"+ parsed_cells[i]["SSID"] + "|" + parsed_cells[i]["MAC"] + "|" +  parsed_cells[i]["Encryption"]  + "|"
+                print(net_card[0] + parsed_cells[i]["Power"]+ "|" + parsed_cells[i]["Quality"]) + "|" + past_date.strftime("%Y-%m-%d %H:%M:%S") + "|"
+
+                quality_parse = float(parsed_cells[i]["Power"].strip('dBm'))
+                time_parse = past_date.strftime("%Y-%m-%dT%H:%M:%SZ")
+
+                json_body = [
+                                {
+                                    "measurement": "signals",
+                                    "tags": {
+                                        "SSID": a[0],
+                                        "MAC": a[1]
+                                    },
+                                    "time": time_parse,
+                                    "fields": {
+                                        "value": quality_parse
+                                    }
+                                }
+                            ]
+                client.write_points(json_body)
+
                 found = 1
             i = i + 1
-        if (found == 0):
-            print("Card not found")
+
+            time.sleep(0.5)
+
 
 main()
