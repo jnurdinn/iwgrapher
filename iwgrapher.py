@@ -96,11 +96,42 @@ def init(table):
     for line in table:
         for el in line:
             #initial data
-            if (counter < 7):
+            if (counter < 25):
                 counter = counter + 1
+                #first card
                 if (counter == 5):
                     a.append(el)
                 if (counter == 6):
+                    a.append(el)
+                if (counter == 8):
+                    a.append(el)
+                #second card
+                if (counter == 9):
+                    a.append(el)
+                if (counter == 10):
+                    a.append(el)
+                if (counter == 12):
+                    a.append(el)
+                #third card
+                if (counter == 13):
+                    a.append(el)
+                if (counter == 14):
+                    a.append(el)
+                if (counter == 16):
+                    a.append(el)
+                #forth card
+                if (counter == 17):
+                    a.append(el)
+                if (counter == 18):
+                    a.append(el)
+                if (counter == 20):
+                    a.append(el)
+                #fifth card
+                if (counter == 21):
+                    a.append(el)
+                if (counter == 22):
+                    a.append(el)
+                if (counter == 24):
                     a.append(el)
     return a
 
@@ -113,9 +144,10 @@ def init_cells(cells):
         table.append(cell_properties)
     return init(table)
 
-#Main Program, prints table from iwlist command
+#Main Program, prints table and parses to grafana via fluxdb
 def main():
 
+    #start sync with influxdb
     client = InfluxDBClient('192.168.41.209', 8086, 'root', 'root', 'wifiStat')
     client.create_database('wifiStat')
 
@@ -125,6 +157,7 @@ def main():
         cells=[[]]
         parsed_cells=[]
 
+        #command start
         proc = subprocess.Popen(["iwlist", interface, "scan"],stdout=subprocess.PIPE, universal_newlines=True)
         out, err = proc.communicate()
 
@@ -147,14 +180,15 @@ def main():
         #state the initial network card
         if stats == 0 :
             a = init_cells(parsed_cells)
-            print("Initial Check : " + a[0] + "/" + a[1])
+            for i in range(1,6):
+                print("SSID " + str(i) + " : " + a[3*i-3] + "/" + a[3*i-2])
+            print("Ok")
             stats = 1
 
 
         len_cells = len(parsed_cells)-1
         net_card = [""]
 
-        #past_date = datetime.datetime.today()
         past_date = datetime.datetime.utcnow()
 
 
@@ -162,10 +196,10 @@ def main():
         i = 0
         found = 0
         while (i < len_cells) & (found == 0):
+
             if (parsed_cells[i]["SSID"] == a[0]) & (parsed_cells[i]["MAC"] == a[1]) & (found == 0):
                 net_card[0] = "|"+ parsed_cells[i]["SSID"] + "|" + parsed_cells[i]["MAC"] + "|" +  parsed_cells[i]["Encryption"]  + "|"
                 print(net_card[0] + parsed_cells[i]["Power"]+ "|" + parsed_cells[i]["Quality"]) + "|" + past_date.strftime("%Y-%m-%d %H:%M:%S") + "|"
-
                 quality_parse = float(parsed_cells[i]["Power"].strip('dBm'))
                 time_parse = past_date.strftime("%Y-%m-%dT%H:%M:%SZ")
 
@@ -174,7 +208,8 @@ def main():
                                     "measurement": "signals",
                                     "tags": {
                                         "SSID": a[0],
-                                        "MAC": a[1]
+                                        "MAC": a[1],
+                                        "Encrypt" : a[2]
                                     },
                                     "time": time_parse,
                                     "fields": {
@@ -183,11 +218,103 @@ def main():
                                 }
                             ]
                 client.write_points(json_body)
-
                 found = 1
+
+            if (parsed_cells[i]["SSID"] == a[3]) & (parsed_cells[i]["MAC"] == a[4]) & (found == 0):
+                net_card[0] = "|"+ parsed_cells[i]["SSID"] + "|" + parsed_cells[i]["MAC"] + "|" +  parsed_cells[i]["Encryption"]  + "|"
+                print(net_card[0] + parsed_cells[i]["Power"]+ "|" + parsed_cells[i]["Quality"]) + "|" + past_date.strftime("%Y-%m-%d %H:%M:%S") + "|"
+                quality_parse = float(parsed_cells[i]["Power"].strip('dBm'))
+                time_parse = past_date.strftime("%Y-%m-%dT%H:%M:%SZ")
+
+                json_body = [
+                                {
+                                    "measurement": "signals",
+                                    "tags": {
+                                        "SSID": a[3],
+                                        "MAC": a[4],
+                                        "Encrypt" : a[5]
+                                    },
+                                    "time": time_parse,
+                                    "fields": {
+                                        "value": quality_parse
+                                    }
+                                }
+                            ]
+                client.write_points(json_body)
+                found = 1
+
+            if (parsed_cells[i]["SSID"] == a[6]) & (parsed_cells[i]["MAC"] == a[7]) & (found == 0):
+                net_card[0] = "|"+ parsed_cells[i]["SSID"] + "|" + parsed_cells[i]["MAC"] + "|" +  parsed_cells[i]["Encryption"]  + "|"
+                print(net_card[0] + parsed_cells[i]["Power"]+ "|" + parsed_cells[i]["Quality"]) + "|" + past_date.strftime("%Y-%m-%d %H:%M:%S") + "|"
+                quality_parse = float(parsed_cells[i]["Power"].strip('dBm'))
+                time_parse = past_date.strftime("%Y-%m-%dT%H:%M:%SZ")
+
+                json_body = [
+                                {
+                                    "measurement": "signals",
+                                    "tags": {
+                                        "SSID": a[6],
+                                        "MAC": a[7],
+                                        "Encrypt" : a[8]
+                                    },
+                                    "time": time_parse,
+                                    "fields": {
+                                        "value": quality_parse
+                                    }
+                                }
+                            ]
+                client.write_points(json_body)
+                found = 1
+
+            if (parsed_cells[i]["SSID"] == a[9]) & (parsed_cells[i]["MAC"] == a[10]) & (found == 0):
+                net_card[0] = "|"+ parsed_cells[i]["SSID"] + "|" + parsed_cells[i]["MAC"] + "|" +  parsed_cells[i]["Encryption"]  + "|"
+                print(net_card[0] + parsed_cells[i]["Power"]+ "|" + parsed_cells[i]["Quality"]) + "|" + past_date.strftime("%Y-%m-%d %H:%M:%S") + "|"
+                quality_parse = float(parsed_cells[i]["Power"].strip('dBm'))
+                time_parse = past_date.strftime("%Y-%m-%dT%H:%M:%SZ")
+
+                json_body = [
+                                {
+                                    "measurement": "signals",
+                                    "tags": {
+                                        "SSID": a[9],
+                                        "MAC": a[10],
+                                        "Encrypt" : a[11]
+                                    },
+                                    "time": time_parse,
+                                    "fields": {
+                                        "value": quality_parse
+                                    }
+                                }
+                            ]
+                client.write_points(json_body)
+                found = 1
+
+            if (parsed_cells[i]["SSID"] == a[12]) & (parsed_cells[i]["MAC"] == a[13]) & (found == 0):
+                net_card[0] = "|"+ parsed_cells[i]["SSID"] + "|" + parsed_cells[i]["MAC"] + "|" +  parsed_cells[i]["Encryption"]  + "|"
+                print(net_card[0] + parsed_cells[i]["Power"]+ "|" + parsed_cells[i]["Quality"]) + "|" + past_date.strftime("%Y-%m-%d %H:%M:%S") + "|"
+                quality_parse = float(parsed_cells[i]["Power"].strip('dBm'))
+                time_parse = past_date.strftime("%Y-%m-%dT%H:%M:%SZ")
+
+                json_body = [
+                                {
+                                    "measurement": "signals",
+                                    "tags": {
+                                        "SSID": a[12],
+                                        "MAC": a[13],
+                                        "Encrypt" : a[14]
+                                    },
+                                    "time": time_parse,
+                                    "fields": {
+                                        "value": quality_parse
+                                    }
+                                }
+                            ]
+                client.write_points(json_body)
+                found = 1
+
+
             i = i + 1
 
-            time.sleep(0.5)
-
+            time.sleep(0.005)
 
 main()
