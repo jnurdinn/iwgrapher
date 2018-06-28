@@ -11,7 +11,15 @@ In order to run, this script requires:
 1. Clone the project using this command : `git clone https://github.com/mamanberliansyah/iwgrapher`
 2. Edit config file `config.json`, here's complete list for configuration :
 
-| First Header  | Second Header |
-| ------------- | ------------- |
-| Content Cell  | Content Cell  |
-| Content Cell  | Content Cell  |
+| No. | Configuration | Info |
+| --- | ------------- | ----------- |
+| 1.  | id,serial | Unique generated serial number |
+| 2.  | id,name | User's name |
+| 3.  | id,wint | Wireless card interface |
+| 4.  | id,wssid | WiFi SSID |
+| 5.  | id,wpass | WiFi password |
+| 6.  | influx,host | IP Address for Influxdb server host |
+| 7.  | influx,port | Port for Influxdb server host |
+| 8.  | influx,user | Username for Influxdb server host |
+| 8.  | influx,passwd | User password for Influxdb server host |
+| 9.  | influx,db | Database name for Influxdb server host |
