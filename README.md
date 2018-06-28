@@ -27,9 +27,9 @@ In order to run, this script requires:
 3. Run the program to see if it works : `sudo python iwgrapher.py` <br />
 The program will print table contain informations about time, MAC Address, Encryption Type, Signal Strength, Signal Quality, and SSID. <br />
 
-4. In order to visualize parsed data, you need to add recently made query into metrics on Grafana. Here's a complete tutorial to help you how to do it : <br /> http://docs.grafana.org/guides/getting_started/ 
+4. In order to visualize parsed data, you need to add recently made query into metrics on Grafana. Here's a complete tutorial to help you how to do it : http://docs.grafana.org/guides/getting_started/ 
 
-5. If you want to run this script everytime you start the device, you may want to use Crontab routine to launch included shell script (launch.sh). Type this command : <br />`$ sudo Crontab -e` <br /> Add the following line : `@reboot sh /home/pi/iwgrapher/launcher.sh >/home/pi/iwgrapher/logs/cronlog 2>&1
+5. If you want to run this script everytime you start the device, you may want to use Crontab routine to launch included shell script (launch.sh). Type this command : `$ sudo Crontab -e` <br /> Add the following line : `@reboot sh /home/pi/iwgrapher/launcher.sh >/home/pi/iwgrapher/logs/cronlog 2>&1
 ` <br />
 
 6. To see if it works, reboot your device by type in : `sudo reboot`
