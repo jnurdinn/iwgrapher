@@ -8,5 +8,7 @@ In order to run, this script requires:
 3. Grafana Server (https://grafana.com/)
 
 ## Installation
-1. Clone the project by typing the command below :
-``
+1. Clone the project using this command below :
+`git clone https://github.com/mamanberliansyah/iwgrapher`
+
+2. 
