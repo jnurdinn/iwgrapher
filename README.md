@@ -3,8 +3,7 @@ This is program written in Python script that is used to parse Wifi signal stren
 
 ## Prerequisites
 In order to run, this script requires:
-1. Python 2.7 (https://www.python.org/)
-Library required : influxdb
+1. Python (https://www.python.org/) | Library required : influxdb
 2. Influxdb Server (https://www.influxdata.com/)
 3. Grafana Server (https://grafana.com/)
 
