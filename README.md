@@ -8,7 +8,7 @@ In order to run, this script requires:
 3. Grafana Server (https://grafana.com/)
 
 ## Installation
-1. Clone the project using this command :<br />`git clone https://github.com/mamanberliansyah/iwgrapher` <br />
+1. Clone the project using this command : `git clone https://github.com/mamanberliansyah/iwgrapher` <br />
 2. Edit config file `config.json`, here's complete list for configuration :
 
 | No. | Configuration | Info |
@@ -24,6 +24,9 @@ In order to run, this script requires:
 | 8.  | influx,passwd | User password for Influxdb server host |
 | 9.  | influx,db | Database name for Influxdb server host |
 
-3. Run the program to see if it works : `sudo python iwgrapher.py`. The program will print table contain informations about time, MAC Address, Encryption Type, Signal Strength, Signal Quality, and SSID. <br />
+3. Run the program to see if it works : `sudo python iwgrapher.py` <br />
+The program will print table contain informations about time, MAC Address, Encryption Type, Signal Strength, Signal Quality, and SSID. <br />
 
-4. In order to run this script everytime you start the device, you may want to use Crontab routine to launch included shell script (launch.sh).
+4. In order to visualize parsed data, 
+
+5. In order to run this script everytime you start the device, you may want to use Crontab routine to launch included shell script (launch.sh).
