@@ -4,11 +4,10 @@ This is program written in Python script that is used to parse Wifi signal stren
 ## Prerequisites
 In order to run, this script requires:
 1. Python 2.7 (https://www.python.org/)
-2. Influxdb (https://www.influxdata.com/)
+Library required : influxdb
+2. Influxdb Server (https://www.influxdata.com/)
 3. Grafana Server (https://grafana.com/)
 
 ## Installation
-1. Clone the project using this command below :
-`git clone https://github.com/mamanberliansyah/iwgrapher`
-
-2. 
+1. Clone the project using this command : `git clone https://github.com/mamanberliansyah/iwgrapher`
+2.
