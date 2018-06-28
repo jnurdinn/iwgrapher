@@ -13,12 +13,17 @@ import json
 import os
 
 #Loads config.json
-with open('/home/pi/iwgrapher/config.json') as json_data_file:
+with open('config.json') as json_data_file:
     data = json.load(json_data_file)
 
 interface = data['id']['wint']
 defaultSSID = data['id']['wssid']
 defaultPSK = data['id']['wpass']
+infUser = data['influx']['user']
+infPwd = data['influx']['passwd']
+infHost = data['influx']['host']
+infPort = data['influx']['port']
+infDb = data['influx']['db']
 
 #Connect to default wifi based on config.json
 def wifiConnect():
@@ -115,8 +120,8 @@ def printCell(cell,i):
 def parsedb():
 
     #start sync with influxdb
-    client = InfluxDBClient('192.168.41.209', 8086, 'root', 'root', 'wifiStat')
-    client.create_database('wifiStat')
+    client = InfluxDBClient(infHost, infPort, infUser, infUser, infDb)
+    client.create_database(infDb)
 
     stats = 0
 
@@ -180,7 +185,7 @@ def getSerial():
     f.close()
   except:
     cpuserial = "ERROR000000"
- 
+
   memserial = ""
   try:
     f = open('/sys/block/mmcblk0/device/cid','r')
@@ -189,14 +194,7 @@ def getSerial():
     f.close()
   except:
     memserial = "ERROR000000000000000000000000"
-  serial = cpuserial+memserial           
-  #print("Serial : " + serial)
-  
-  #Prints hostname as serial
-  #f= open('/etc/hostname','w+')
-  #f.write("%s" % serial)
-  #f.close 
-
+  serial = cpuserial+memserial
   return serial
 
 def main():
