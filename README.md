@@ -10,7 +10,6 @@ In order to run, this script requires:
 ## Installation
 1. Clone the project using this command : `git clone https://github.com/mamanberliansyah/iwgrapher`
 2. Edit config file `config.json`, here's complete list for configuration :
-
 | No. | Configuration | Info |
 | --- | ------------- | ----------- |
 | 1.  | id,serial | Unique generated serial number |
@@ -23,3 +22,5 @@ In order to run, this script requires:
 | 8.  | influx,user | Username for Influxdb server host |
 | 8.  | influx,passwd | User password for Influxdb server host |
 | 9.  | influx,db | Database name for Influxdb server host |
+
+3. 
