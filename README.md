@@ -10,6 +10,7 @@ In order to run, this script requires:
 ## Installation
 1. Clone the project using this command : `git clone https://github.com/mamanberliansyah/iwgrapher`
 2. Edit config file `config.json`, here's complete list for configuration :
+
 | No. | Configuration | Info |
 | --- | ------------- | ----------- |
 | 1.  | id,serial | Unique generated serial number |
