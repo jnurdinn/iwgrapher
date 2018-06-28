@@ -9,4 +9,8 @@ In order to run, this script requires:
 
 ## Installation
 1. Clone the project using this command : `git clone https://github.com/mamanberliansyah/iwgrapher`
-2.
+2. Edit config file `config.json`, here's complete list for configuration :
+| First Header  | Second Header |
+| ------------- | ------------- |
+| Content Cell  | Content Cell  |
+| Content Cell  | Content Cell  |
