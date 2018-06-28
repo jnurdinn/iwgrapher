@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# iwgrapher
-# juan4life - maman@bengkrad.com v 0.1
-# Parses output from iwlist various output into grafana interface
+# fiveiwparser.py v 0.1
+# juan4life - maman@bengkrad.com
+# Prints five top wifi with the best signal strength store its information 
 
 from influxdb import InfluxDBClient
 
