@@ -3,13 +3,14 @@
         "serial": "0004a3b39c123456534420202002000007f20106f5", 
         "wssid": "BukaEmas (EP)", 
         "name": "Anonymous", 
-        "wint": "wlan0", 
+        "wint": "wlp2s0", 
         "wpass": "bukalapak8e812018"
     }, 
     "influx": {
+	    "user": "root",
         "passwd": "root", 
-        "host": "192.168.41.209", 
-        "db": "wifiStat", 
-        "user": "root"
+        "host": "192.168.41.209",
+	    "port": "8086", 
+        "db": "wifiStat"
     }
 }
