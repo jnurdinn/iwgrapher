@@ -31,4 +31,4 @@ The program will print table contain informations about time, MAC Address, Encry
 
 5. If you want to run this script everytime you start the device, you may want to use Crontab routine to launch included shell script (launch.sh). Type this command : `$ sudo Crontab -e` <br /> Add the following line : `@reboot sleep 5 && sh /home/pi/iwgrapher/launcher.sh >/home/pi/iwgrapher/logs/cronlog 2>&1` <br /> 
 
-6. To see if it works, reboot your device by type in : `sudo reboot` <br /> If it won't start, you can always check the log file to see what's wrong
+6. To see if it works, reboot your device by typing in : `sudo reboot` <br /> If it won't start, you can always check the log file to see what's wrong (It's located on logs/cronlog)
