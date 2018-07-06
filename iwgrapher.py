@@ -4,6 +4,7 @@
 # Parses output from iwlist various output into grafana interface
 
 from influxdb import InfluxDBClient
+from collections import OrderedDict
 
 import sys
 import subprocess
@@ -17,13 +18,19 @@ with open('config.json') as json_data_file:
     data = json.load(json_data_file)
 
 interface = data['id']['wint']
+name = data['id']['name']
 defaultSSID = data['id']['wssid']
 defaultPSK = data['id']['wpass']
+pollRate = data['id']['pollRate']
 infUser = data['influx']['user']
 infPwd = data['influx']['passwd']
 infHost = data['influx']['host']
 infPort = data['influx']['port']
 infDb = data['influx']['db']
+infRName = data['influx']['retentionName']
+infRDur = data['influx']['retentionDuration']
+infRAct = data['influx']['retentionActive']
+infRRep = data['influx']['retentionReplication']
 
 #Connect to default wifi based on config.json
 def wifiConnect():
@@ -123,6 +130,9 @@ def parsedb():
     client = InfluxDBClient(infHost, infPort, infUser, infUser, infDb)
     client.create_database(infDb)
 
+
+    client.create_retention_policy( infRName, infRDur, int(infRRep), default=infRAct)
+
     stats = 0
 
     while 1:
@@ -173,6 +183,8 @@ def parsedb():
                             ]
                 client.write_points(json_body)
             i = i + 1
+        #time.sleep(data['id']['pollRate'])
+	time.sleep(int(pollRate))
 
 # Extract serial from cpuinfo file
 def getSerial():
@@ -197,11 +209,31 @@ def getSerial():
   serial = cpuserial+memserial
   return serial
 
-def main():
-    data['id']['serial'] = getSerial()
+# Rewrite old conf
+def writeConf():
+    sortedID = OrderedDict([('serial',getSerial()),
+                            ('name',name),
+                            ('wint',interface),
+                            ('wssid',defaultSSID),
+                            ('wpass',defaultPSK),
+                            ('pollRate',pollRate)])
+    sortedInflux = OrderedDict([('user',infUser),
+                                ('passwd',infPwd),
+                                ('host',infHost),
+                                ('port',infPort),
+                                ('db',infDb),
+                                ('retentionActive',infRAct),
+                                ('retentionName',infRName),
+                                ('retentionDuration',infRDur),
+                                ('retentionReplication',infRRep)])
+    data['id'] = sortedID
+    data['influx'] = sortedInflux
     outfile = open('config.json', "w")
-    outfile.write(json.dumps(data, indent=4))
+    outfile.write(json.dumps(data, indent=4, sort_keys=False))
     outfile.close()
+
+def main():
+    writeConf()
     wifiConnect()
     parsedb()
 
