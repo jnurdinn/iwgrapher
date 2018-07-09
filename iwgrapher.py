@@ -183,7 +183,6 @@ def parsedb():
                             ]
                 client.write_points(json_body)
             i = i + 1
-        #time.sleep(data['id']['pollRate'])
 	time.sleep(int(pollRate))
 
 # Extract serial from cpuinfo file
@@ -216,7 +215,7 @@ def writeConf():
                             ('wint',interface),
                             ('wssid',defaultSSID),
                             ('wpass',defaultPSK),
-                            ('pollRate',pollRate)])
+                            ('pollRate',data['id']['pollRate'])])
     sortedInflux = OrderedDict([('user',infUser),
                                 ('passwd',infPwd),
                                 ('host',infHost),
