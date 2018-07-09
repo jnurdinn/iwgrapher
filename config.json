@@ -1,16 +1,21 @@
 {
     "id": {
-	    "serial": "", 
-	    "wssid": "", 
-	    "name": "Anonymous", 
-	    "wint": "wlan0", 
-	    "wpass": ""
+        "serial": "", 
+        "name": "Anonymous", 
+        "wint": "", 
+        "wssid": "", 
+        "wpass": "", 
+        "pollRate": "5"
     }, 
     "influx": {
-	    "user": "root",
-	    "passwd": "root", 
-	    "host": "localhost",
-	    "port": "8086", 
-	    "db": "wifiStat"
+        "user": "root", 
+        "passwd": "root", 
+        "host": "localhost", 
+        "port": "8086", 
+        "db": "wifiStat", 
+        "retentionActive": "True", 
+        "retentionName": "default", 
+        "retentionDuration": "3d", 
+        "retentionReplication": "1"
     }
 }
