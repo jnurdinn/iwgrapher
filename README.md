@@ -1,5 +1,5 @@
 # iwgrapher
-This program is written in Python script that is used to parse information of Wifi signal strength using iwlist which is stored in influx db and visualized in Grafana. This script is intended to run at startup as a daemon service, so you may use Crontab routine to launch the Shell Script. This script may also set the default access point (wpa_supplicant) that can be configured manually to make things easier for doing SSH. I was intended to write this script for Raspberry Pi, but you can use it in any other device as long as it has Wifi Network Card.
+Program is written in Python script that is used to parse information of Wifi signal strength using iwlist which is stored in influx db and visualized in Grafana. This script is intended to run at startup as a daemon service, so you may use Crontab routine to launch the Shell Script. This script may also set the default access point (wpa_supplicant) that can be configured manually to make things easier for doing SSH. I was intended to write this script for Raspberry Pi, but you can use it in any other device as long as it has Wifi Network Card.
 
 ## Prerequisites
 In order to run, this script requires:
