@@ -17,24 +17,9 @@ import os
 with open('config.json') as json_data_file:
     data = json.load(json_data_file)
 
-interface = data['id']['wint']
-name = data['id']['name']
-defaultSSID = data['id']['wssid']
-defaultPSK = data['id']['wpass']
-pollRate = data['id']['pollRate']
-infUser = data['influx']['user']
-infPwd = data['influx']['passwd']
-infHost = data['influx']['host']
-infPort = data['influx']['port']
-infDb = data['influx']['db']
-infRName = data['influx']['retentionName']
-infRDur = data['influx']['retentionDuration']
-infRAct = data['influx']['retentionActive']
-infRRep = data['influx']['retentionReplication']
-
 #Connect to default wifi based on config.json
 def wifiConnect():
-    connWifi = 'ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev\nupdate_config=1\n\nnetwork={\n      ssid="' + defaultSSID + '"\n	psk="' + defaultPSK + '"\n}'
+    connWifi = 'ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev\nupdate_config=1\n\nnetwork={\n      ssid="' + data['id']['wssid'] + '"\n	psk="' + data['id']['wpass'] + '"\n}'
     with open('/etc/wpa_supplicant/wpa_supplicant.conf', 'w') as f:
         f.write(connWifi)
         f.close()
@@ -127,11 +112,11 @@ def printCell(cell,i):
 def parsedb():
 
     #start sync with influxdb
-    client = InfluxDBClient(infHost, infPort, infUser, infUser, infDb)
-    client.create_database(infDb)
+    client = InfluxDBClient(data['influx']['host'], data['influx']['port'], data['influx']['user'], data['influx']['passwd'], data['influx']['db'])
+    client.create_database(data['influx']['db'])
 
 
-    client.create_retention_policy( infRName, infRDur, int(infRRep), default=infRAct)
+    client.create_retention_policy( data['influx']['retentionName'], data['influx']['retentionDuration'], int(data['influx']['retentionReplication']), default=data['influx']['retentionActive'])
 
     stats = 0
 
@@ -140,7 +125,7 @@ def parsedb():
         parsedCells=[]
 
         #command start
-        proc = subprocess.Popen(["iwlist", interface, "scan"],stdout=subprocess.PIPE, universal_newlines=True)
+        proc = subprocess.Popen(["iwlist", data['id']['wint'], "scan"],stdout=subprocess.PIPE, universal_newlines=True)
         out, err = proc.communicate()
 
         for line in out.split("\n"):
@@ -183,7 +168,7 @@ def parsedb():
                             ]
                 client.write_points(json_body)
             i = i + 1
-	time.sleep(int(pollRate))
+	time.sleep(int(data['id']['pollRate']))
 
 # Extract serial from cpuinfo file
 def getSerial():
@@ -211,20 +196,20 @@ def getSerial():
 # Rewrite old conf
 def writeConf():
     sortedID = OrderedDict([('serial',getSerial()),
-                            ('name',name),
-                            ('wint',interface),
-                            ('wssid',defaultSSID),
-                            ('wpass',defaultPSK),
+                            ('name',data['id']['name']),
+                            ('wint',data['id']['wint']),
+                            ('wssid',data['id']['wssid']),
+                            ('wpass',data['id']['wpass']),
                             ('pollRate',data['id']['pollRate'])])
-    sortedInflux = OrderedDict([('user',infUser),
-                                ('passwd',infPwd),
-                                ('host',infHost),
-                                ('port',infPort),
-                                ('db',infDb),
-                                ('retentionActive',infRAct),
-                                ('retentionName',infRName),
-                                ('retentionDuration',infRDur),
-                                ('retentionReplication',infRRep)])
+    sortedInflux = OrderedDict([('user',data['influx']['user']),
+                                ('passwd',data['influx']['passwd']),
+                                ('host',data['influx']['host']),
+                                ('port',data['influx']['port']),
+                                ('db',data['influx']['db']),
+                                ('retentionActive',data['influx']['retentionName']),
+                                ('retentionName',data['influx']['retentionDuration']),
+                                ('retentionDuration',data['influx']['retentionActive']),
+                                ('retentionReplication',data['influx']['retentionReplication'])])
     data['id'] = sortedID
     data['influx'] = sortedInflux
     outfile = open('config.json', "w")
