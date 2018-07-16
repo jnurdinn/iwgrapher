@@ -1,0 +1,13 @@
+{% block body %}
+{% if not session['logged_in'] %}
+<div class="container">
+  <h1 class="display-1 text-bold">iwgrapher webconfig</h1>
+  <h5 class="text-gray-soft text-regular">Configurations made easy</h5>
+<form action="/login" method="POST">
+  <input type="username" name="username" placeholder="Username">
+  <input type="password" name="password" placeholder="Password">
+  <input type="submit" value="Log in">
+</form>
+</div>
+{% endif %}
+{% endblock %}

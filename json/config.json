@@ -1,0 +1,21 @@
+{
+    "id": {
+        "serial": "0004a3b39c12345653442020200200000b540106e7", 
+        "name": "Bagas Purwas", 
+        "wint": "wlan0", 
+        "wssid": "BukaEmas (EP)", 
+        "wpass": "bukalapak8e812018", 
+        "pollRate": "5"
+    }, 
+    "influx": {
+        "user": "root", 
+        "passwd": "root", 
+        "host": "192.168.41.209", 
+        "port": "8086", 
+        "db": "wifiStat", 
+        "retentionActive": "True", 
+        "retentionName": "default", 
+        "retentionDuration": "3d", 
+        "retentionReplication": "1"
+    }
+}

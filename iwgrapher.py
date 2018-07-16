@@ -14,7 +14,7 @@ import json
 import os
 
 #Loads config.json
-with open('config.json') as json_data_file:
+with open('json/config.json') as json_data_file:
     data = json.load(json_data_file)
 
 #Connect to default wifi based on config.json
@@ -114,61 +114,57 @@ def parsedb():
     #start sync with influxdb
     client = InfluxDBClient(data['influx']['host'], data['influx']['port'], data['influx']['user'], data['influx']['passwd'], data['influx']['db'])
     client.create_database(data['influx']['db'])
-
-
     client.create_retention_policy( data['influx']['retentionName'], data['influx']['retentionDuration'], int(data['influx']['retentionReplication']), default=data['influx']['retentionActive'])
 
     stats = 0
 
-    while 1:
-        cells=[[]]
-        parsedCells=[]
+    cells=[[]]
+    parsedCells=[]
 
-        #command start
-        proc = subprocess.Popen(["iwlist", data['id']['wint'], "scan"],stdout=subprocess.PIPE, universal_newlines=True)
-        out, err = proc.communicate()
+    #command start
+    proc = subprocess.Popen(["iwlist", data['id']['wint'], "scan"],stdout=subprocess.PIPE, universal_newlines=True)
+    out, err = proc.communicate()
 
-        for line in out.split("\n"):
-            cellLine = match(line,"Cell ")
-            if cellLine != None:
-                cells.append([])
-                line = cellLine[-27:]
-            cells[-1].append(line.rstrip())
+    for line in out.split("\n"):
+        cellLine = match(line,"Cell ")
+        if cellLine != None:
+            cells.append([])
+            line = cellLine[-27:]
+        cells[-1].append(line.rstrip())
 
-        cells=cells[1:]
+    cells=cells[1:]
 
-        count = 0
-        for cell in cells:
-            parsedCells.append(parseCell(cell))
-            count = count + 1
+    count = 0
+    for cell in cells:
+        parsedCells.append(parseCell(cell))
+        count = count + 1
 
-        sortCells(parsedCells)
-        lenCells = len(parsedCells)-1
+    sortCells(parsedCells)
+    lenCells = len(parsedCells)-1
 
-        #Print and parse wifi datas to graph
-        i = 0
-        while (i < lenCells):
-            if (parsedCells[i] != {}):
-                printCell(parsedCells,i)
-                quality_parse = float(parsedCells[i]["Quality"].strip('%'))
-                time_parse = datetime.datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ")
-                json_body = [
-                                {
-                                    "measurement": "signals",
-                                    "tags": {
-                                        "SSID": parsedCells[i]["SSID"],
-                                        "MAC": parsedCells[i]["MAC"],
-                                        "Encrypt" : parsedCells[i]["Encryption"]
-                                    },
-                                    "time": time_parse,
-                                    "fields": {
-                                        "value": quality_parse
-                                    }
+    #Print and parse wifi datas to graph
+    i = 0
+    while (i < lenCells):
+        if (parsedCells[i] != {}):
+            printCell(parsedCells,i)
+            quality_parse = float(parsedCells[i]["Quality"].strip('%'))
+            time_parse = datetime.datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ")
+            json_body = [
+                            {
+                                "measurement": "signals",
+                                "tags": {
+                                    "SSID": parsedCells[i]["SSID"],
+                                    "MAC": parsedCells[i]["MAC"],
+                                    "Encrypt" : parsedCells[i]["Encryption"]
+                                },
+                                "time": time_parse,
+                                "fields": {
+                                    "value": quality_parse
                                 }
-                            ]
-                client.write_points(json_body)
-            i = i + 1
-	time.sleep(int(data['id']['pollRate']))
+                            }
+                        ]
+            client.write_points(json_body)
+        i = i + 1
 
 # Extract serial from cpuinfo file
 def getSerial():
@@ -206,19 +202,31 @@ def writeConf():
                                 ('host',data['influx']['host']),
                                 ('port',data['influx']['port']),
                                 ('db',data['influx']['db']),
-                                ('retentionActive',data['influx']['retentionName']),
-                                ('retentionName',data['influx']['retentionDuration']),
-                                ('retentionDuration',data['influx']['retentionActive']),
+                                ('retentionActive',data['influx']['retentionActive']),
+                                ('retentionName',data['influx']['retentionName']),
+                                ('retentionDuration',data['influx']['retentionDuration']),
                                 ('retentionReplication',data['influx']['retentionReplication'])])
     data['id'] = sortedID
     data['influx'] = sortedInflux
-    outfile = open('config.json', "w")
+    outfile = open('json/config.json', "w")
     outfile.write(json.dumps(data, indent=4, sort_keys=False))
     outfile.close()
 
 def main():
     writeConf()
     wifiConnect()
-    parsedb()
+    while 1 :
+        with open('json/restart.json') as json_data_file:
+            restart = json.load(json_data_file)
+            json_data_file.close()
+        if(restart['isRestart'] == 'True'):
+            writeConf()
+            wifiConnect()
+            restart['isRestart'] = "False"
+            outrst = open('json/restart.json', "w")
+            outrst.write(json.dumps(restart))
+            outrst.close()
+        parsedb()
+        time.sleep(int(data['id']['pollRate']))
 
 main()

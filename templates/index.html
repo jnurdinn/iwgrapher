@@ -1,0 +1,97 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+    <head>
+        <title>iwgrapher</title>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/css/bootstrap.min.css" integrity="sha384-Smlep5jCw/wG7hdkwQ/Z5nLIefveQRIY9nfy6xoR1uRYBtpZgI6339F5dgvm/e9B" crossorigin="anonymous">
+       <meta name="viewport" content = "width=device-width, initial-scale=1.0">
+
+    </head>
+    <body>
+
+  <section class="jumbotron text-center">
+   <div class="container">
+     <h1 class="jumbotron-heading">iwgrapher webconfig</h1>
+     <p class="lead text-muted">Configuration made easy</p>
+   </div>
+ </section>
+ <div class="container">
+   <form  action="" method="post" role="form">
+     {{ form.csrf }}
+     <div class="form-group">
+       <h3>ID</h3>
+       <label for="data['id']['serial']">Serial Number:</label>
+       <input type="text" class="form-control" id="data['id']['serial']" name="data['id']['serial']" value="{{data['id']['serial']}}" readonly>
+       <br>
+       <label for="data['id']['name']">Name:</label>
+       <input type="text" class="form-control" id="data['id']['name']" name="data['id']['name']" value="{{data['id']['name']}}">
+       <br>
+       <label for="data['id']['name']">WiFi Interface Card :</label>
+       <input type="text" class="form-control" id="data['id']['wint']" name="data['id']['wint']" value="{{data['id']['wint']}}">
+       <br>
+       <label for="data['id']['wssid']">WiFi SSID :</label>
+       <input type="text" class="form-control" id="data['id']['wssid']" name="data['id']['wssid']" value="{{data['id']['wssid']}}">
+       <br>
+       <label for="data['id']['wpass']">WiFi Password:</label>
+       <input type="password" class="form-control" id="data['id']['wpass']" name="data['id']['wpass']" value="{{data['id']['wpass']}}">
+       <label for="data['id']['pollRate']">Polling Rate:</label>
+       <input type="text" class="form-control" id="data['id']['wpass']" name="data['id']['pollRate']" value="{{data['id']['pollRate']}}">
+     </div>
+     <div class="form-group">
+       <h3>Influx</h3>
+       <label for="data['influx']['host']">Server Host IP:</label>
+       <input type="text" class="form-control" id="data['influx']['host']" name="data['influx']['host']" value="{{data['influx']['host']}}">
+       <br>
+       <label for="data['influx']['port']">Server Port:</label>
+       <input type="text" class="form-control" id="data['influx']['port']" name="data['influx']['port']" value="{{data['influx']['port']}}">
+       <br>
+       <label for="data['influx']['user']">Server Username:</label>
+       <input type="text" class="form-control" id="data['influx']['user']" name="data['influx']['user']" value="{{data['influx']['user']}}">
+       <br>
+       <label for="data['influx']['passwd']">Server Password:</label>
+       <input type="password" class="form-control" id="data['influx']['passwd']" name="data['influx']['passwd']" value="{{data['influx']['passwd']}}">
+       <br>
+       <label for="data['influx']['db']">Server Database Name:</label>
+       <input type="text" class="form-control" id="data['influx']['db']" name="data['influx']['db']" value="{{data['influx']['db']}}">
+       <br>
+       <label for="data['influx']['retentionActive']">Retention Policy Active:</label>
+       <input type="text" class="form-control" id="data['influx']['retentionActive']" name="data['influx']['retentionActive']" value="{{data['influx']['retentionActive']}}">
+       <br>
+       <label for="data['influx']['retentionName']">Retention Policy Name:</label>
+       <input type="text" class="form-control" id="data['influx']['retentionName']" name="data['influx']['retentionName']" value="{{data['influx']['retentionName']}}">
+       <br>
+       <label for="data['influx']['retentionDuration']">Retention Policy Duration:</label>
+       <input type="text" class="form-control" id="data['influx']['retentionDuration']" name="data['influx']['retentionDuration']" value="{{data['influx']['retentionDuration']}}">
+       <br>
+       <label for="data['influx']['retentionReplication']">Retention Policy Replication:</label>
+       <input type="text" class="form-control" id="data['influx']['retentionReplication']" name="data['influx']['retentionReplication']" value="{{data['influx']['retentionReplication']}}">
+       <br>
+     </div>
+     <button type="submit" class="btn btn-success">Sign Up</button>
+   </form>
+ </div>
+  <br>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+
+        {% for message in messages %}
+            {% if "Error" not in message[1]: %}
+                <div class="alert alert-info">
+                <strong>Success! </strong> {{ message[1] }}
+                </div>
+            {% endif %}
+
+            {% if "Error" in message[1]: %}
+                <div class="alert alert-warning">
+                {{ message[1] }}
+                </div>
+            {% endif %}
+        {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+</div>
+<br>
+</div>
+</div>
+</body>
+</html>
