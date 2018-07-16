@@ -1,13 +1,30 @@
-{% block body %}
-{% if not session['logged_in'] %}
-<div class="container">
-  <h1 class="display-1 text-bold">iwgrapher webconfig</h1>
-  <h5 class="text-gray-soft text-regular">Configurations made easy</h5>
-<form action="/login" method="POST">
-  <input type="username" name="username" placeholder="Username">
-  <input type="password" name="password" placeholder="Password">
-  <input type="submit" value="Log in">
-</form>
-</div>
-{% endif %}
-{% endblock %}
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+    <head>
+        <title>Login</title>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/css/bootstrap.min.css" integrity="sha384-Smlep5jCw/wG7hdkwQ/Z5nLIefveQRIY9nfy6xoR1uRYBtpZgI6339F5dgvm/e9B" crossorigin="anonymous">
+       <meta name="viewport" content = "width=device-width, initial-scale=1.0">
+    </head>
+    <body>
+      {% block body %}
+      {% if not session['logged_in'] %}
+      <section class="jumbotron text-center">
+       <div class="container">
+         <h1 class="jumbotron-heading">iwgrapher webconfig</h1>
+         <p class="lead text-muted">Configuration made easy</p>
+       </div>
+     </section>
+     <div align="center">
+        <form action="/login" method="POST">
+          <label for="username">Username :</label>
+          <input type="username" name="username" placeholder="Username"> <br><br>
+          <label for="password">Password :</label>
+          <input type="password" name="password" placeholder="Password"> <br><br>
+          <input type="submit" class="btn btn-success" value="Log In">
+        </form>
+    </div>
+      </div>
+      {% endif %}
+      {% endblock %}
+    </body>
+</html>

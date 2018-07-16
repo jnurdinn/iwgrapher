@@ -1,7 +1,7 @@
-from flask import Flask, render_template, flash, request
+from flask import Flask, render_template, flash, request, flash, redirect, request, session, abort
 from wtforms import Form, TextField, TextAreaField, validators, StringField, SubmitField, PasswordField
 from collections import OrderedDict
-import json
+import json, os
 
 # App config.
 DEBUG = True
@@ -64,30 +64,46 @@ def writeConf():
 
 @app.route("/", methods=['GET', 'POST'])
 def index():
-    form = settings(request.form)
-    print form.errors
-    if request.method == 'POST':
-        data['id']['serial'] = request.form["data['id']['serial']"]
-        data['id']['name'] = request.form["data['id']['name']"]
-        data['id']['wint'] = request.form["data['id']['wint']"]
-        data['id']['wssid'] = request.form["data['id']['wssid']"]
-        data['id']['wpass'] = request.form["data['id']['wpass']"]
-        data['id']['pollRate'] = request.form["data['id']['pollRate']"]
-        data['influx']['user'] = request.form["data['influx']['user']"]
-        data['influx']['passwd'] = request.form["data['influx']['passwd']"]
-        data['influx']['host'] = request.form["data['influx']['host']"]
-        data['influx']['port'] = request.form["data['influx']['port']"]
-        data['influx']['db'] = request.form["data['influx']['db']"]
-        data['influx']['retentionActive'] = request.form["data['influx']['retentionActive']"]
-        data['influx']['retentionName'] = request.form["data['influx']['retentionName']"]
-        data['influx']['retentionDuration'] = request.form["data['influx']['retentionDuration']"]
-        data['influx']['retentionReplication'] = request.form["data['influx']['retentionReplication']"]
-        if form.validate():
-            flash(' Configuration Saved')
-            writeConf()
-        else:
-            flash(' Error: All Fields are Required to be Filled')
-    return render_template('index.html', form=form, data=data)
+    if not session.get('logged_in'):
+        return render_template('login.html')
+    else:
+        form = settings(request.form)
+        print form.errors
+        if request.method == 'POST':
+            data['id']['serial'] = request.form["data['id']['serial']"]
+            data['id']['name'] = request.form["data['id']['name']"]
+            data['id']['wint'] = request.form["data['id']['wint']"]
+            data['id']['wssid'] = request.form["data['id']['wssid']"]
+            data['id']['wpass'] = request.form["data['id']['wpass']"]
+            data['id']['pollRate'] = request.form["data['id']['pollRate']"]
+            data['influx']['user'] = request.form["data['influx']['user']"]
+            data['influx']['passwd'] = request.form["data['influx']['passwd']"]
+            data['influx']['host'] = request.form["data['influx']['host']"]
+            data['influx']['port'] = request.form["data['influx']['port']"]
+            data['influx']['db'] = request.form["data['influx']['db']"]
+            data['influx']['retentionActive'] = request.form["data['influx']['retentionActive']"]
+            data['influx']['retentionName'] = request.form["data['influx']['retentionName']"]
+            data['influx']['retentionDuration'] = request.form["data['influx']['retentionDuration']"]
+            data['influx']['retentionReplication'] = request.form["data['influx']['retentionReplication']"]
+            if form.validate():
+                flash(' Configuration Saved')
+                writeConf()
+            else:
+                flash(' Error: All Fields are Required to be Filled')
+        return render_template('index.html', form=form, data=data)
+
+@app.route('/login', methods=['POST'])
+def do_admin_login():
+    if request.form['password'] == 'root' and request.form['username'] == 'root':
+        session['logged_in'] = True
+    else:
+        flash('Wrong password!')
+    return redirect("/")
+
+@app.route("/logout")
+def logout():
+    session['logged_in'] = False
+    return index()
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0',port=2048, debug=True)
