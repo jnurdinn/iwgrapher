@@ -33,6 +33,13 @@
        <br>
        <label for="data['id']['wpass']">WiFi Password:</label>
        <input type="password" class="form-control" id="data['id']['wpass']" name="data['id']['wpass']" value="{{data['id']['wpass']}}">
+       <br>
+       <label for="data['id']['ip']">IP Address:</label>
+       <input type="text" class="form-control" id="data['id']['ip']" name="data['id']['ip']" value="{{data['id']['ip']}}" readonly>
+       <br>
+       <label for="data['id']['gateway']">Gateway Address:</label>
+       <input type="text" class="form-control" id="data['id']['gateway']" name="data['id']['gateway']" value="{{data['id']['gateway']}}" readonly>
+       <br>
        <label for="data['id']['pollRate']">Polling Rate:</label>
        <input type="text" class="form-control" id="data['id']['wpass']" name="data['id']['pollRate']" value="{{data['id']['pollRate']}}">
      </div>
@@ -50,7 +57,7 @@
        <label for="data['influx']['passwd']">Server Password:</label>
        <input type="password" class="form-control" id="data['influx']['passwd']" name="data['influx']['passwd']" value="{{data['influx']['passwd']}}">
        <br>
-       <label for="data['influx']['db']">Server Database Name:</label>
+       <label for="data['influx']['db']">Database Name (Signal Strength):</label>
        <input type="text" class="form-control" id="data['influx']['db']" name="data['influx']['db']" value="{{data['influx']['db']}}">
        <br>
        <label for="data['influx']['retentionActive']">Retention Policy Active:</label>

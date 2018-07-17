@@ -9,10 +9,10 @@ app = Flask(__name__)
 app.config.from_object(__name__)
 app.config['SECRET_KEY'] = '7d441f27d441f27567d441f2b6176a'
 
-with open('json/config.json') as json_data_file:
+with open('/home/pi/iwgrapher/json/config.json') as json_data_file:
     data = json.load(json_data_file)
     json_data_file.close()
-with open('json/restart.json') as json_data_file:
+with open('/home/pi/iwgrapher/json/restart.json') as json_data_file:
     restart = json.load(json_data_file)
     json_data_file.close()
 
@@ -23,13 +23,16 @@ class settings(Form):
     ID['wint'] = TextField("data['id']['wint']", validators=[validators.required()])
     ID['wssid'] = PasswordField("data['id']['wssid']", validators=[validators.required()])
     ID['wpass'] = TextField("data['id']['wpass']", validators=[validators.required()])
+    ID['ip'] = TextField("data['id']['ip']", validators=[validators.required()])
+    ID['gateway'] = TextField("data['id']['gateway']", validators=[validators.required()])
     ID['pollRate'] = TextField("data['id']['pollRate']", validators=[validators.required()])
-    ID['user'] = TextField("data['influx']['user']", validators=[validators.required()])
-    ID['passwd'] = PasswordField("data['influx']['passwd']", validators=[validators.required()])
-    ID['host'] = TextField("data['influx']['host']", validators=[validators.required()])
     influx = {}
+    influx['user'] = TextField("data['influx']['user']", validators=[validators.required()])
+    influx['passwd'] = PasswordField("data['influx']['passwd']", validators=[validators.required()])
+    influx['host'] = TextField("data['influx']['host']", validators=[validators.required()])
     influx['port'] = TextField("data['influx']['port']", validators=[validators.required()])
-    influx['db'] = TextField("data['influx']['db']", validators=[validators.required()])
+    influx['sgndb'] = TextField("data['influx']['sgndb']", validators=[validators.required()])
+    influx['pingdb'] = TextField("data['influx']['pingdb']", validators=[validators.required()])
     influx['retentionActive'] = TextField("data['influx']['retentionActive']", validators=[validators.required()])
     influx['retentionName'] = TextField("data['influx']['retentionName']", validators=[validators.required()])
     influx['retentionDuration'] = TextField("data['influx']['retentionDuration']", validators=[validators.required()])
@@ -42,6 +45,8 @@ def writeConf():
                             ('wint',data['id']['wint']),
                             ('wssid',data['id']['wssid']),
                             ('wpass',data['id']['wpass']),
+                            ('ip',data['id']['ip']),
+                            ('gateway',data['id']['gateway']),
                             ('pollRate',data['id']['pollRate'])])
     sortedInflux = OrderedDict([('user',data['influx']['user']),
                                 ('passwd',data['influx']['passwd']),
@@ -54,11 +59,11 @@ def writeConf():
                                 ('retentionReplication',data['influx']['retentionReplication'])])
     data['id'] = sortedID
     data['influx'] = sortedInflux
-    outfile = open('json/config.json', "w")
+    outfile = open('/home/pi/iwgrapher/json/config.json', "w")
     outfile.write(json.dumps(data, indent=4, sort_keys=False))
     outfile.close()
     restart['isRestart'] = "True"
-    outrst = open('json/restart.json', "w")
+    outrst = open('/home/pi/iwgrapher/json/restart.json', "w")
     outrst.write(json.dumps(restart))
     outrst.close()
 
@@ -70,7 +75,6 @@ def index():
         form = settings(request.form)
         print form.errors
         if request.method == 'POST':
-            data['id']['serial'] = request.form["data['id']['serial']"]
             data['id']['name'] = request.form["data['id']['name']"]
             data['id']['wint'] = request.form["data['id']['wint']"]
             data['id']['wssid'] = request.form["data['id']['wssid']"]

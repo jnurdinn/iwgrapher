@@ -5,8 +5,9 @@
 
 from influxdb import InfluxDBClient
 from collections import OrderedDict
+from subprocess import check_output
 
-import sys
+import sys, subprocess, time, datetime, json, os, shlex
 import subprocess
 import time
 import datetime
@@ -14,7 +15,7 @@ import json
 import os
 
 #Loads config.json
-with open('json/config.json') as json_data_file:
+with open('/home/pi/iwgrapher/json/config.json') as json_data_file:
     data = json.load(json_data_file)
 
 #Connect to default wifi based on config.json
@@ -69,12 +70,6 @@ rules={"SSID":getSSID,
        "Power":getsPower
        }
 
-# Sort Cells, based on best signal quality
-def sortCells(cells):
-	sortby = "Quality"
-	reverse = True
-	cells.sort(None, lambda el:el[sortby],reverse)
-
 # Sets of columns and ordering
 columns=["SSID","MAC","Quality","Encryption"]
 
@@ -115,12 +110,8 @@ def parsedb():
     client = InfluxDBClient(data['influx']['host'], data['influx']['port'], data['influx']['user'], data['influx']['passwd'], data['influx']['db'])
     client.create_database(data['influx']['db'])
     client.create_retention_policy( data['influx']['retentionName'], data['influx']['retentionDuration'], int(data['influx']['retentionReplication']), default=data['influx']['retentionActive'])
-
-    stats = 0
-
     cells=[[]]
     parsedCells=[]
-
     #command start
     proc = subprocess.Popen(["iwlist", data['id']['wint'], "scan"],stdout=subprocess.PIPE, universal_newlines=True)
     out, err = proc.communicate()
@@ -138,18 +129,43 @@ def parsedb():
     for cell in cells:
         parsedCells.append(parseCell(cell))
         count = count + 1
-
-    sortCells(parsedCells)
     lenCells = len(parsedCells)-1
 
     #Print and parse wifi datas to graph
+
+    #parsing ping to gateway
+    client = InfluxDBClient(data['influx']['host'], data['influx']['port'], data['influx']['user'], data['influx']['passwd'], data['influx']['db'])
+    client.create_database(data['influx']['db'])
+    ping_parse = check_output("ping -c 1 " + data['id']['gateway'] + "| awk -F = 'FNR==2 {print substr($4,1,length($4)-3)}'", shell=True)
+    if ping_parse == ('\n'):
+        floated = 0.00
+    else :
+        floated = float(ping_parse.strip('\n'))
+    time_parse = datetime.datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ")
+    json_pings_body = [
+                {
+                    "measurement": "pings",
+                    "tags": {
+                        "SSID": data['id']['wssid'],
+                        "IP" : data['id']['ip'],
+                        "Gateway": data['id']['gateway']
+                    },
+                    "time": time_parse,
+                    "fields": {
+                        "value": floated
+                    }
+                }
+            ]
+    client.write_points(json_pings_body)
+
+    #parsing signal strength
     i = 0
     while (i < lenCells):
         if (parsedCells[i] != {}):
             printCell(parsedCells,i)
             quality_parse = float(parsedCells[i]["Quality"].strip('%'))
             time_parse = datetime.datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ")
-            json_body = [
+            json_signal_body = [
                             {
                                 "measurement": "signals",
                                 "tags": {
@@ -163,8 +179,10 @@ def parsedb():
                                 }
                             }
                         ]
-            client.write_points(json_body)
+            client.write_points(json_signal_body)
         i = i + 1
+
+
 
 # Extract serial from cpuinfo file
 def getSerial():
@@ -189,6 +207,16 @@ def getSerial():
   serial = cpuserial+memserial
   return serial
 
+# Retrieve IP Address & Default Gateway
+def getAddress(param):
+    strs = subprocess.check_output(shlex.split('ip r l'))
+    ip  = strs.split('src')[-1].split()[0]
+    gateway = strs.split('default via')[-1].split()[0]
+    if param == 0 :
+        return ip
+    else :
+        return gateway
+
 # Rewrite old conf
 def writeConf():
     sortedID = OrderedDict([('serial',getSerial()),
@@ -196,6 +224,8 @@ def writeConf():
                             ('wint',data['id']['wint']),
                             ('wssid',data['id']['wssid']),
                             ('wpass',data['id']['wpass']),
+                            ('ip',getAddress(0)),
+                            ('gateway',getAddress(1)),
                             ('pollRate',data['id']['pollRate'])])
     sortedInflux = OrderedDict([('user',data['influx']['user']),
                                 ('passwd',data['influx']['passwd']),
@@ -208,7 +238,7 @@ def writeConf():
                                 ('retentionReplication',data['influx']['retentionReplication'])])
     data['id'] = sortedID
     data['influx'] = sortedInflux
-    outfile = open('json/config.json', "w")
+    outfile = open('/home/pi/iwgrapher/json/config.json', "w")
     outfile.write(json.dumps(data, indent=4, sort_keys=False))
     outfile.close()
 
@@ -216,14 +246,14 @@ def main():
     writeConf()
     wifiConnect()
     while 1 :
-        with open('json/restart.json') as json_data_file:
+        with open('/home/pi/iwgrapher/json/restart.json') as json_data_file:
             restart = json.load(json_data_file)
             json_data_file.close()
         if(restart['isRestart'] == 'True'):
             writeConf()
             wifiConnect()
             restart['isRestart'] = "False"
-            outrst = open('json/restart.json', "w")
+            outrst = open('/home/pi/iwgrapher/json/restart.json', "w")
             outrst.write(json.dumps(restart))
             outrst.close()
         parsedb()
