@@ -1,21 +1,16 @@
 #!/usr/bin/env python
-# iwgrapher
+# iwgrapher.py
 # Jungman Berliansyah N - maman@bengkrad.com v 0.1
-# Parses output from iwlist various output into grafana interface
+# Parses output from iwlist output into grafana interface
 
 from influxdb import InfluxDBClient
 from collections import OrderedDict
 from subprocess import check_output
 
 import sys, subprocess, time, datetime, json, os, shlex
-import subprocess
-import time
-import datetime
-import json
-import os
 
 #Loads config.json
-with open('/home/pi/iwgrapher/json/config.json') as json_data_file:
+with open('json/config.json') as json_data_file:
     data = json.load(json_data_file)
 
 #Connect to default wifi based on config.json
@@ -182,8 +177,6 @@ def parsedb():
             client.write_points(json_signal_body)
         i = i + 1
 
-
-
 # Extract serial from cpuinfo file
 def getSerial():
   cpuserial = ""
@@ -238,7 +231,7 @@ def writeConf():
                                 ('retentionReplication',data['influx']['retentionReplication'])])
     data['id'] = sortedID
     data['influx'] = sortedInflux
-    outfile = open('/home/pi/iwgrapher/json/config.json', "w")
+    outfile = open('json/config.json', "w")
     outfile.write(json.dumps(data, indent=4, sort_keys=False))
     outfile.close()
 
@@ -246,14 +239,14 @@ def main():
     writeConf()
     wifiConnect()
     while 1 :
-        with open('/home/pi/iwgrapher/json/restart.json') as json_data_file:
+        with open('json/restart.json') as json_data_file:
             restart = json.load(json_data_file)
             json_data_file.close()
         if(restart['isRestart'] == 'True'):
             writeConf()
             wifiConnect()
             restart['isRestart'] = "False"
-            outrst = open('/home/pi/iwgrapher/json/restart.json', "w")
+            outrst = open('json/restart.json', "w")
             outrst.write(json.dumps(restart))
             outrst.close()
         parsedb()

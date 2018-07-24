@@ -1,3 +1,8 @@
+#!/usr/bin/env python
+# webserv.py
+# Jungman Berliansyah N - maman@bengkrad.com v 0.1
+# Web Config Built in Flask for iwgrapher
+
 from flask import Flask, render_template, flash, request, flash, redirect, request, session, abort
 from wtforms import Form, TextField, TextAreaField, validators, StringField, SubmitField, PasswordField
 from collections import OrderedDict

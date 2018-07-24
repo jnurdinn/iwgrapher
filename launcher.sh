@@ -1,2 +1,3 @@
 #!/bin/sh
-sudo python /home/pi/iwgrapher/iwgrapher.py
+cd /home/pi/iwgrapher/
+sudo python iwgrapher.py

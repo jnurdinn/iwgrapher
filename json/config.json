@@ -1,18 +1,18 @@
 {
     "id": {
-        "serial": "0004a3b39c12345653442020200200000b540106e7", 
-        "name": "Bagas Purwas", 
-        "wint": "wlan0", 
-        "wssid": "BukaEmas (EP)", 
-        "wpass": "bukalapak8e812018", 
-        "ip": "192.168.215.164", 
-        "gateway": "192.168.214.1", 
+        "serial": "ERROR000000000000000000000000", 
+        "name": "", 
+        "wint": "", 
+        "wssid": "", 
+        "wpass": "", 
+        "ip": "", 
+        "gateway": "", 
         "pollRate": "5"
     }, 
     "influx": {
         "user": "root", 
         "passwd": "root", 
-        "host": "192.168.41.209", 
+        "host": "localhost", 
         "port": "8086", 
         "db": "wifiStat", 
         "retentionActive": "True", 
