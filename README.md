@@ -19,15 +19,16 @@ In order to run, this script requires:
 | 4.  | id,wssid | WiFi SSID |
 | 5.  | id,wpass | WiFi password |
 | 6.  | id,pollRate | Data parsing rate in second |
-| 7.  | influx,host | IP Address for Influxdb server host |
-| 8.  | influx,port | Port for Influxdb server host |
-| 9.  | influx,user | Username for Influxdb server host |
-| 10. | influx,passwd | User password for Influxdb server host |
-| 11. | influx,db | Database name for Influxdb server host |
-| 12. | influx,retentionActive | Database retention policy active |
-| 13. | influx,retentionName | Database retention name |
-| 14. | influx,retentionDuration | Database retention duration |
-| 15. | influx,retentionReplication | Database retention replication type |
+| 7.  | id,location | Monitor location spot |
+| 8.  | influx,host | IP Address for Influxdb server host |
+| 9.  | influx,port | Port for Influxdb server host |
+| 10.  | influx,user | Username for Influxdb server host |
+| 11. | influx,passwd | User password for Influxdb server host |
+| 12. | influx,db | Database name for Influxdb server host |
+| 13. | influx,retentionActive | Database retention policy active |
+| 14. | influx,retentionName | Database retention name |
+| 15. | influx,retentionDuration | Database retention duration |
+| 16. | influx,retentionReplication | Database retention replication type |
 
 3. Run the program to see if it works : `sudo python iwgrapher.py` <br />
 The program will print table contain informations about time, MAC Address, Encryption Type, Signal Strength, Signal Quality, and SSID. <br />
