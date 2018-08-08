@@ -40,9 +40,8 @@ The program will print table contain informations about time, MAC Address, Encry
 6. To see if it works, reboot your device by typing in : `sudo reboot` <br /> If it won't start, you can always check the log file to see what's wrong (It's located on logs/cronlog)
 
 
-
 | Waktu | Kualitas Sinyal (%) | RTT (ms) | Waktu | Kualitas Sinyal (%) | RTT (ms) | Waktu | Kualitas Sinyal (%) | RTT (ms) |
-|----------|---------------------|----------|----------|---------------------|----------|----------|---------------------|----------|
+|:--------:|:-------------------:|:--------:|:--------:|:-------------------:|:--------:|:--------:|:-------------------:|:--------:|
 | 15:37:44 | 79 | 8.84 | 15:38:34 | 81 | 7.64 | 15:40:14 | 76 | 3.64 |
 | 15:37:49 | 81 | 11.1 | 15:38:39 | 84 | 5.37 | 15:40:19 | 84 | 67.8 |
 | 15:37:54 | 80 | 7.19 | 15:38:44 | 79 | 0 | 15:40:24 | 84 | 115 |
@@ -52,4 +51,4 @@ The program will print table contain informations about time, MAC Address, Encry
 | 15:38:14 | 77 | 7.33 | 15:39:04 | 79 | 8.41 | 15:40:44 | 81 | 3.82 |
 | 15:38:19 | 87 | 10.8 | 15:39:09 | 77 | 22.3 | 15:40:49 | 84 | 3.54 |
 | 15:38:24 | 81 | 7.22 | 15:39:14 | 77 | 18.2 |  |  |  |
-| 15:38:29 | 84 | 6.85 | 15:39:19 | 76 | 5.81 |  |  |  |
+| 15:38:29 | 84 | 6.85 | 15:39:19 | 76 | 5.81 | Rerata | 80.7105 | 13.255 |
